@@ -20,3 +20,22 @@ class CommentsView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, pk):
+        queryset = Comment.objects.get(pk=pk)
+        serializer = CommentsSerializer(instance=queryset, data=request.data, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        comment_to_delete = Comment.objects.get(pk=pk)
+        delete_operation = comment_to_delete.delete()
+        data = {}
+        if delete_operation:
+            data["success"] = "Deletion was successful"
+        else:
+            data["failure"] = "Deletion failed"
+        return Response(data=data)
