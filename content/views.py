@@ -3,7 +3,7 @@ from .serializers import Category, CategorySerializer, Post, PostSerializer, Cre
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework import filters, generics, permissions, status, views
-from django.http.response import Http404, JsonResponse
+# from django.http.response import Http404, JsonResponse
 from users.models import Profile
 
 # Create your views here.
@@ -16,6 +16,24 @@ class CategoryDetailView(views.APIView):
         queryset = Category.objects.get(slug=slug)
         serializer = CategorySerializer(queryset)
         return Response(serializer.data)
+    
+    def put(self, request, slug):
+        queryset = Category.objects.get(slug=slug)
+        serializer = CategorySerializer(instance=queryset, data=request.data, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, slug):
+        category_to_delete = Category.objects.get(slug=slug)
+        delete_operation = category_to_delete.delete()
+        data = {}
+        if delete_operation:
+            data["success"] = "Deletion was successful"
+        else:
+            data["failure"] = "Deletion failed"
+        return Response(data=data)
     
 class PostsListAPIView(generics.ListAPIView):
     serializer_class = PostSerializer
