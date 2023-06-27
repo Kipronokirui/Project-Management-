@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework import filters, generics, permissions, status, views
 from django.http.response import Http404, JsonResponse
+from users.models import Profile
 
 # Create your views here.
 class CategoryAPIView(generics.ListCreateAPIView):
@@ -20,9 +21,23 @@ class PostsListAPIView(generics.ListAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
     
+class CreatePostAPIView(views.APIView):
+    def post(self, request):
+        current_user = User.objects.get(username="admin")
+        author = Profile.objects.get(user=current_user)
+        category = Category.objects.get(pk=1)
+        data = request.data
+        # data['author'] = author
+        # data['category']= category
+        serializer = CreateUpdatePostSerializer(data=data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 class PostDetailView(views.APIView):
-    serializer_class = PostSerializer
-    queryset = Post.objects.all()
     def get(self, request, slug):
         queryset = Post.objects.get(slug=slug)
         serializer = PostSerializer(queryset, context={"request": request})
@@ -36,3 +51,13 @@ class PostDetailView(views.APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, slug):
+        post_to_delete = Post.objects.get(slug=slug)
+        delete_operation = post_to_delete.delete()
+        data = {}
+        if delete_operation:
+            data["success"] = "Deletion was successful"
+        else:
+            data["failure"] = "Deletion failed"
+        return Response(data=data)
