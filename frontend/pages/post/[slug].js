@@ -7,7 +7,7 @@ export default function PostDetail({ data }) {
     return (
       <>
         <Head>
-            <title>Post Details</title>
+            <title>{data.title}</title>
             <meta name="description" content={data.title} />
             <link rel="icon" href="/logo.ico" />
         </Head>

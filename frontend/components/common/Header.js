@@ -1,25 +1,27 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { Button, Dropdown, Navbar, Avatar } from 'flowbite-react';
+import Link from 'next/link';
 
-async function getCategorys() {
-  const response = await fetch("http://127.0.0.1:8000/categorys/", { cache: "no-store" });
-  const data = await response.json();
-  return data;
-}
+// async function getCategorys() {
+//   const response = await fetch("http://127.0.0.1:8000/categorys/", { cache: "no-store" });
+//   const data = await response.json();
+//   return data;
+// }
 
-export default async function Header({ params, searchParams }) {
+export default function Header() {
+  // const data = await getCategorys();
+  // console.log(data);
   const [categorys, setCategorys] = useState([]);
-  // const categorys = await getCategorys();
   useEffect(() => {
-    async function fetchData() {
-      const data = await getCategorys();
-      setCategorys(data);
-    }
+    const fetchCategorys = async () => {
+      const response = await fetch('http://127.0.0.1:8000/categorys/');
+      const json = await response.json();
+      setCategorys(json);
+    };
 
-    fetchData();
+    fetchCategorys();
   }, []);
-  console.log(categorys)
   return (
     <Navbar
       fluid
@@ -90,23 +92,13 @@ export default async function Header({ params, searchParams }) {
           inline
           label="Categories"
         >
-          {categorys?.map((category) => (
-            <Dropdown.Item>
-              Dashboard
-          </Dropdown.Item>
+          {categorys.map((category) => (
+            <Link href={`/category/${category.slug}`}>
+              <Dropdown.Item>
+                <p>{category.title} (<small className='text-blue-400'>{category.posts.length}</small>)</p>
+              </Dropdown.Item>
+              </Link>
           ))}
-          <Dropdown.Item>
-            Dashboard
-          </Dropdown.Item>
-          <Dropdown.Item>
-            Settings
-          </Dropdown.Item>
-          <Dropdown.Item>
-            Earnings
-          </Dropdown.Item>
-          <Dropdown.Item>
-            Sign out
-          </Dropdown.Item>
         </Dropdown>
       </Navbar.Collapse>
     </Navbar>
