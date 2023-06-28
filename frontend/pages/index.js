@@ -2,7 +2,10 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Posts from '../components/posts/Posts'
 
-export default function Home({posts}) {
+
+
+export default function Home({ posts }) {
+  
   return (
     <div>
       <Head>
@@ -23,13 +26,13 @@ export default function Home({posts}) {
   )
 }
 
-export async function getStaticProps() {
-  const response = await fetch('http://127.0.0.1:8000/posts/')
-  const posts = await response.json();
+// export async function getStaticProps() {
+//   const response = await fetch('http://127.0.0.1:8000/posts/')
+//   const posts = await response.json();
 
-  return {
-    props: {
-      posts,
-    }
-  }
-}
+//   return {
+//     props: {
+//       posts,
+//     }
+//   }
+// }

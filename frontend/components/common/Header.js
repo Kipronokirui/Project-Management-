@@ -1,8 +1,25 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Dropdown, Navbar, Avatar } from 'flowbite-react';
 
-export default function Header() {
+async function getCategorys() {
+  const response = await fetch("http://127.0.0.1:8000/categorys/", { cache: "no-store" });
+  const data = await response.json();
+  return data;
+}
+
+export default async function Header({ params, searchParams }) {
+  const [categorys, setCategorys] = useState([]);
+  // const categorys = await getCategorys();
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getCategorys();
+      setCategorys(data);
+    }
+
+    fetchData();
+  }, []);
+  console.log(categorys)
   return (
     <Navbar
       fluid
@@ -69,7 +86,40 @@ export default function Header() {
         <Navbar.Link href="#">
           Contact
         </Navbar.Link>
+        <Dropdown
+          inline
+          label="Categories"
+        >
+          {categorys?.map((category) => (
+            <Dropdown.Item>
+              Dashboard
+          </Dropdown.Item>
+          ))}
+          <Dropdown.Item>
+            Dashboard
+          </Dropdown.Item>
+          <Dropdown.Item>
+            Settings
+          </Dropdown.Item>
+          <Dropdown.Item>
+            Earnings
+          </Dropdown.Item>
+          <Dropdown.Item>
+            Sign out
+          </Dropdown.Item>
+        </Dropdown>
       </Navbar.Collapse>
     </Navbar>
   );
 }
+
+// export async function getStaticProps() {
+//   const response = await fetch('http://127.0.0.1:8000/posts/')
+//   const categorys = await response.json();
+
+//   return {
+//     props: {
+//       categorys,
+//     }
+//   }
+// }
