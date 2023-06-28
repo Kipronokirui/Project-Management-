@@ -1,19 +1,21 @@
 import Head from 'next/head';
 import Header from './common/Header';
-import Footer from './common/Footer';
+import SiteFooter from './common/Footer';
 
 export default function Layout({ children }) {
     return (
       <>
-        <Head>
+        {/* <Head>
           <title>Real Estate</title>
-        </Head>
+        </Head> */}
         <header>
           <Header />
         </header>
-        <main>{children}</main>
+        <main className="container mx-auto md:my-4">
+          {children}
+        </main>
         <footer>
-          <Footer />
+          <SiteFooter />
         </footer>
       </>
     );

@@ -13,6 +13,7 @@ class PostSerializer(serializers.ModelSerializer):
     author = ProfileSerializer(read_only = True )
     category = PostCategorySerializer(read_only=True)
     comments = serializers.SerializerMethodField(read_only=True)
+    # image = serializers.SerializerMethodField('get_image')
     class Meta:
         model = Post
         fields = ['title', 'content', 'image', 'slug', 'post_id', 'category', 'author','comments']
@@ -21,6 +22,9 @@ class PostSerializer(serializers.ModelSerializer):
         comments = obj.post_comment.all()
         serializer = CommentsSerializer(comments, many=True)
         return serializer.data
+    
+    # def get_image(self, obj):
+    #     return obj.image.url
 
 class CreateUpdatePostSerializer(serializers.ModelSerializer):
     class Meta:

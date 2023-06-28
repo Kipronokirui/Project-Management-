@@ -11,10 +11,11 @@ export default function Home({posts}) {
         <link rel="icon" href="/logo.ico" />
       </Head>
       <main>
-        {posts && posts.map((post) => (
-          <Posts key={post.post_id} post={post} />
-        ))}
-        
+        <div class="grid grid-cols-4 gap-4">
+          {posts && posts.map((post) => (
+            <Posts key={post.post_id} post={post} />
+          ))}
+        </div>
       </main>
 
       
